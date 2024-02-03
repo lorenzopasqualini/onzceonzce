@@ -1,11 +1,12 @@
 import React from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Link, Tabs } from 'expo-router';
+import { Link, Tabs, router } from 'expo-router';
 import { Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { TextInput } from 'react-native-paper';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -31,6 +32,15 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          header: ()=> <Pressable style={{ width: "100%", paddingHorizontal: 20, paddingTop: 50 }} onPress={()=> router.push("/search")}>
+            <TextInput
+              onPressIn={()=> router.push("/search")}
+              placeholder="Search"
+              mode="outlined"
+              left={<TextInput.Icon icon={"magnify"} />}
+              disabled
+            />
+          </Pressable>
         }}
       />
       <Tabs.Screen
