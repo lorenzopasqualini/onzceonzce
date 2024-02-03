@@ -1,8 +1,13 @@
-import { View, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { View, StyleSheet, Pressable } from 'react-native';
+import { Text } from 'react-native-paper';
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
+      <Pressable onPress={()=> router.push("/AAPL")}>
+        <Text>Press Me</Text>
+      </Pressable>
     </View>
   );
 }

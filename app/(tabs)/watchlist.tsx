@@ -1,6 +1,6 @@
 import { View, StyleSheet } from 'react-native';
 
-export default function ModalScreen() {
+export default function WatchlistScreen() {
   return (
     <View></View>
   );

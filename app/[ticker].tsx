@@ -1,8 +1,13 @@
+import { useLocalSearchParams } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native-paper';
 
-export default function TabTwoScreen() {
+export default function TickerScreen() {
+  const { ticker } = useLocalSearchParams()
   return (
-    <View></View>
+    <View>
+      <Text>{ticker}</Text>
+    </View>
   );
 }
 
