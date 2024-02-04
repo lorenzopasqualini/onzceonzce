@@ -30,7 +30,7 @@ export const Card = ({
           </View>
           <View>
             <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>{formatCurrency(price)}{" "}</Text>
-            <Text variant='labelMedium' style={{ color: priceChange < 0 ? 'red' : priceChange > 0 ? 'lightgreen' : 'auto' }}>{formatCurrency(priceChange)}{" "} · {priceChangePercentage.toFixed(2)}%</Text>
+            <Text variant='labelMedium' style={{ color: priceChange < 0 ? 'crimson' : priceChange > 0 ? '#00796b' : 'auto' }}>{formatCurrency(priceChange)}{" "} · {priceChangePercentage.toFixed(2)}%</Text>
           </View>
         </View>
       </Pressable>
