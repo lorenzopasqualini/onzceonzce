@@ -4,10 +4,11 @@ import { selectStock, selectStockPrices } from '@/utils/searchStocks';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { View, SafeAreaView, Pressable, FlatList, useWindowDimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { Button, Text } from 'react-native-paper';
+import { StoreContext } from './_layout';
 
 export default function TickerScreen() {
   const { ticker } = useLocalSearchParams()
@@ -16,6 +17,8 @@ export default function TickerScreen() {
   const { width } = useWindowDimensions()
   const options = ['Description', 'History Metrics']
   const [selectedOption, setSelectedOption] = useState(options[0])
+  const positiveOverallPriceChange = stockPrices && stockPrices[0].value < stockPrices[stockPrices.length - 1].value
+  const {likedStocks, updatedLikedStocks} = useContext(StoreContext)
 
   return (
     <SafeAreaView style={{ flex: 1, marginHorizontal: 20, marginBottom: 10 }}>
@@ -25,7 +28,15 @@ export default function TickerScreen() {
         </Pressable>
 
         <Pressable>
-          <MaterialCommunityIcons name='star-outline' color={'white'} size={40} />
+          <MaterialCommunityIcons
+            onPress={()=>{
+              if(likedStocks.includes(ticker as string)) return updatedLikedStocks(ticker as string, 'del')
+              updatedLikedStocks(ticker as string, 'add')
+            }}
+            name={likedStocks.includes(ticker as string) ? 'star' : 'star-outline'}
+            color={'white'}
+            size={40}
+          />
         </Pressable>
       </View>
 
@@ -49,7 +60,7 @@ export default function TickerScreen() {
                 </Text>
               </View>
 
-{/*               <View style={{ paddingTop: 20 }}>
+              <View style={{ paddingTop: 20 }}>
                 <LineChart
                   areaChart
                   data={stockPrices}
@@ -124,7 +135,7 @@ export default function TickerScreen() {
                     },
                   }}
                 />
-              </View> */}
+              </View>
 
               <FlatList
                 data={options}

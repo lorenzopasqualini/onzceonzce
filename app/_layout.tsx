@@ -8,6 +8,7 @@ import { PaperProvider, TextInput } from 'react-native-paper';
 import { theme } from '@/theme';
 import { SearchableStock } from '@/data';
 import { searchStocks } from '@/utils/searchStocks';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,22 +51,45 @@ export const StoreContext = createContext<{
   searchQuery: string;
   setSearchQuery: (text: string) => void;
   searchedStocks: SearchableStock[];
-  setSearchedStocks: (stocks: SearchableStock[]) => void
+  setSearchedStocks: (stocks: SearchableStock[]) => void;
+  likedStocks: string[];
+  updatedLikedStocks: (ticker: string, op: 'add' | 'del') => void
   }>({
     searchQuery: "",
     setSearchQuery: () => {},
     searchedStocks: [],
-    setSearchedStocks: () => {}
+    setSearchedStocks: () => {},
+    likedStocks: [],
+    updatedLikedStocks: () => {}
   })
 
 function RootLayoutNav() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchedStocks, setSearchedStocks] = useState<SearchableStock[]>([])
+  const [likedStocks, setLikedStocks] = useState<string[]>([])
+  const updatedLikedStocks = async (ticker: string, op: 'add' | 'del') => {
+    const prevStocks = {...likedStocks}
+    const newStocks = op === 'del' ? prevStocks.filter(symbol => symbol !== ticker) : [ticker, ...prevStocks]
+    try {
+      await AsyncStorage.setItem('watchlist', JSON.stringify(newStocks))
+      setLikedStocks(newStocks)
+    } catch (error) {
+      setLikedStocks(prevStocks)
+    }
+  }
+
+  useEffect(()=>{
+    async function getLikedStocks(){
+      const stocks = await AsyncStorage.getItem('watchlist')
+      if(stocks) setLikedStocks(JSON.parse(stocks))
+    }
+    getLikedStocks()
+  },[])
 
   return (
     <PaperProvider theme={theme}>
       <ThemeProvider value={DarkTheme}>
-        <StoreContext.Provider value={{searchQuery, setSearchQuery, searchedStocks, setSearchedStocks}}>
+        <StoreContext.Provider value={{searchQuery, setSearchQuery, searchedStocks, setSearchedStocks, likedStocks, updatedLikedStocks}}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="search" options={{ headerTitle: ()=>
