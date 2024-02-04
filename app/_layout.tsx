@@ -9,6 +9,7 @@ import { theme } from '@/theme';
 import { SearchableStock } from '@/data';
 import { searchStocks } from '@/utils/searchStocks';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -68,8 +69,8 @@ function RootLayoutNav() {
   const [searchedStocks, setSearchedStocks] = useState<SearchableStock[]>([])
   const [likedStocks, setLikedStocks] = useState<string[]>([])
   const updatedLikedStocks = async (ticker: string, op: 'add' | 'del') => {
-    const prevStocks = {...likedStocks}
-    const newStocks = op === 'del' ? prevStocks.filter(symbol => symbol !== ticker) : [ticker, ...prevStocks]
+    const prevStocks = [...likedStocks]
+    const newStocks = op === 'del' ? prevStocks.filter((symbol) => symbol !== ticker) : [ticker, ...prevStocks]
     try {
       await AsyncStorage.setItem('watchlist', JSON.stringify(newStocks))
       setLikedStocks(newStocks)
@@ -90,20 +91,22 @@ function RootLayoutNav() {
     <PaperProvider theme={theme}>
       <ThemeProvider value={DarkTheme}>
         <StoreContext.Provider value={{searchQuery, setSearchQuery, searchedStocks, setSearchedStocks, likedStocks, updatedLikedStocks}}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="search" options={{ headerTitle: ()=>
-              <TextInput placeholder='Search' mode='outlined' dense autoFocus style={{ width: '88%' }}
-                onChangeText={(text: string)=>{
-                  setSearchQuery(text);
-                  const stocks = searchStocks(text);
-                  setSearchedStocks(stocks)
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="search" options={{ headerBackVisible: false, headerTitle: ()=>
+                <TextInput placeholder='Search' mode='outlined' dense autoFocus style={{ width: '88%' }}
+                  onChangeText={(text: string)=>{
+                    setSearchQuery(text);
+                    const stocks = searchStocks(text);
+                    setSearchedStocks(stocks)
+                  }}
+                />
                 }}
               />
-              }}
-            />
-            <Stack.Screen name="[ticker]" options={{ headerShown: false }} />
-          </Stack>
+              <Stack.Screen name="[ticker]" options={{ headerShown: false }} />
+            </Stack>
+          </GestureHandlerRootView>
         </StoreContext.Provider>
       </ThemeProvider>
     </PaperProvider>

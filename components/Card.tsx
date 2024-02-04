@@ -24,7 +24,7 @@ export const Card = ({
         <Pressable onPress={()=> router.push(`/${ticker}`)} style={{ flexDirection: 'row', marginVertical: 10, paddingHorizontal: 10, height: 60 }}>
         <Image source={image} style={{ width: 50, height: 50 }} contentFit='contain' />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width - 75, paddingLeft: 15 }}>
-          <View style={{ alignItems: 'flex-end' }}>
+          <View style={{ alignItems: 'flex-start' }}>
             <Text variant='titleMedium' style={{ fontWeight: 'bold' }}>{ticker}</Text>
             <Text variant='labelMedium'>{companyName}</Text>
           </View>
